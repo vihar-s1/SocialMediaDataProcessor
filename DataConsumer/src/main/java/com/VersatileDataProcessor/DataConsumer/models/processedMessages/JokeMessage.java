@@ -1,7 +1,7 @@
 package com.VersatileDataProcessor.DataConsumer.models.processedMessages;
 
 
-import com.VersatileDataProcessor.DataConsumer.models.Joke;
+import com.VersatileDataProcessor.DataConsumer.models.messageSupport.Joke;
 import com.VersatileDataProcessor.DataConsumer.models.MessageType;
 import com.VersatileDataProcessor.DataConsumer.models.apiMessages.JokeApiMessage;
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class JokeMessage implements ProcessedMessageInterface{
     }
 
     public static List<JokeMessage> processApiMessage(JokeApiMessage apiMessage){
-        if (apiMessage == null || apiMessage.isError() || apiMessage.getAmount() == 0) return null;
+        if (apiMessage == null || apiMessage.isError() || apiMessage.getAmount() == 0) return Collections.emptyList();
 
         List<Joke> jokes = apiMessage.getJokes();
 

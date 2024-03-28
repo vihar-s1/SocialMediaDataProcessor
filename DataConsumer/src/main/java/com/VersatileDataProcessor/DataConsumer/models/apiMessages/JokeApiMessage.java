@@ -1,6 +1,6 @@
 package com.VersatileDataProcessor.DataConsumer.models.apiMessages;
 
-import com.VersatileDataProcessor.DataConsumer.models.Joke;
+import com.VersatileDataProcessor.DataConsumer.models.messageSupport.Joke;
 import com.VersatileDataProcessor.DataConsumer.models.MessageType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @ToString
 @JsonDeserialize(as = JokeApiMessage.class)
 public class JokeApiMessage implements ApiMessageInterface {
-    private String id = UUID.randomUUID().toString();
+    private String id;
 
     @Getter
     private final MessageType messageType = MessageType.JOKE;

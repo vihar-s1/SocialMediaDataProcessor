@@ -5,15 +5,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
 
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @ToString
+@NoArgsConstructor @AllArgsConstructor
+@Component
 @JsonDeserialize(as = JokeMessage.class)
 @Document(indexName = "jokes")
 @TypeAlias("JokeMessage")

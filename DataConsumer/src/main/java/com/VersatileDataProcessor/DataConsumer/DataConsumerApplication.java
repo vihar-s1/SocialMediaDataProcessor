@@ -11,14 +11,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 @SpringBootApplication
 public class DataConsumerApplication {
 
-	@Value(value = "${database.endpoint.add}")
-	private String ESAddEndPoint;
-	@Bean
-	public WebClient.Builder getWebClientBuilder() {
-		return WebClient.builder()
-				.baseUrl(ESAddEndPoint)
-				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-	}
 	public static void main(String[] args) {
 		SpringApplication.run(DataConsumerApplication.class, args);
 	}

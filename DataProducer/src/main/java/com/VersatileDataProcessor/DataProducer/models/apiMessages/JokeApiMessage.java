@@ -3,6 +3,7 @@ package com.VersatileDataProcessor.DataProducer.models.apiMessages;
 import com.VersatileDataProcessor.DataProducer.models.MessageType;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class JokeApiMessage implements ApiMessageInterface {
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-class Joke {
+class Joke implements Serializable {
     private String category;
     private String type;
     private String joke;

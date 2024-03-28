@@ -18,8 +18,9 @@ public class ElasticsearchConfig extends ReactiveElasticsearchConfiguration {
     @Override
     public @NonNull ClientConfiguration clientConfiguration() {
         return ClientConfiguration.builder()
-
                 .connectedTo(hostName + ":" + port)
+                .withSocketTimeout(60_000) // Set socket timeout (in milliseconds)
+                .withConnectTimeout(30_000) // Set connection timeout (in milliseconds)
                 .build();
     }
 }

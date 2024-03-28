@@ -4,5 +4,7 @@ import java.io.Serializable;
 
 public enum MessageType implements Serializable {
     JOKE,
-    MOCK
+    MOCK,
+    RANDOM_USER
 }
+

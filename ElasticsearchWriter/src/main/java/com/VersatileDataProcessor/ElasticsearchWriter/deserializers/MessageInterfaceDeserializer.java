@@ -5,6 +5,7 @@ import com.VersatileDataProcessor.ElasticsearchWriter.models.MessageType;
 import com.VersatileDataProcessor.ElasticsearchWriter.models.processedMessages.JokeMessage;
 import com.VersatileDataProcessor.ElasticsearchWriter.models.processedMessages.MessageInterface;
 import com.VersatileDataProcessor.ElasticsearchWriter.models.processedMessages.MockMessage;
+import com.VersatileDataProcessor.ElasticsearchWriter.models.processedMessages.RandomUserMessage;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -24,6 +25,7 @@ public class MessageInterfaceDeserializer extends JsonDeserializer<MessageInterf
 
         return switch (MessageType.valueOf(messageType)) {
             case JOKE -> mapper.readValue(root.toString(), JokeMessage.class);
+            case RANDOM_USER -> mapper.readValue(root.toString(), RandomUserMessage.class);
             case MOCK -> mapper.readValue(root.toString(), MockMessage.class);
         };
     }

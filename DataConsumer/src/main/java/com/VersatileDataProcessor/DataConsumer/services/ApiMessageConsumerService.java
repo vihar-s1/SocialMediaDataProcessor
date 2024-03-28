@@ -1,15 +1,19 @@
 package com.VersatileDataProcessor.DataConsumer.services;
 
 
+import com.VersatileDataProcessor.DataConsumer.models.MessageType;
 import com.VersatileDataProcessor.DataConsumer.models.MyResponseBody;
 import com.VersatileDataProcessor.DataConsumer.models.apiMessages.ApiMessageInterface;
 import com.VersatileDataProcessor.DataConsumer.models.apiMessages.JokeApiMessage;
 import com.VersatileDataProcessor.DataConsumer.models.apiMessages.MockApiMessage;
+import com.VersatileDataProcessor.DataConsumer.models.apiMessages.RandomUserApiMessage;
 import com.VersatileDataProcessor.DataConsumer.models.processedMessages.JokeMessage;
 import com.VersatileDataProcessor.DataConsumer.models.processedMessages.MockMessage;
 import com.VersatileDataProcessor.DataConsumer.models.processedMessages.ProcessedMessageInterface;
+import com.VersatileDataProcessor.DataConsumer.models.processedMessages.RandomUserMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -50,26 +54,38 @@ public class ApiMessageConsumerService {
         switch (apiMessage.getMessageType()){
             case MOCK -> sendDBWriteRequest( MockMessage.processApiMessage((MockApiMessage) apiMessage) );
             case JOKE -> JokeMessage.processApiMessage((JokeApiMessage) apiMessage).forEach(this::sendDBWriteRequest);
+            case RANDOM_USER -> RandomUserMessage.processApiMessage((RandomUserApiMessage) apiMessage).forEach(this::sendDBWriteRequest);
         }
     }
 
 
     private void sendDBWriteRequest(ProcessedMessageInterface processedMessage){
-        webClientBuilder.build()
-                .post()
-                .body(Mono.just(processedMessage), processedMessage.getClass())
-                .retrieve()
-                .bodyToMono(MyResponseBody.class)
-                .toFuture()
-                .whenComplete((myResponseBody, throwable) -> {
-                    if (throwable == null) {
-                        log.info("Request sent with success=[" + myResponseBody.getSuccess() + "], and return message=[" + myResponseBody.getMessage() + "]");
-                        log.debug("Data Sent is : " + myResponseBody.getData());
-                    }
-                    else {
-                        log.error("exception occurred : " + throwable);
-                        throw new RuntimeException(throwable);
-                    }
-                });
+        try {
+            webClientBuilder.build()
+                    .post()
+                    .body(Mono.just(processedMessage), processedMessage.getClass())
+                    .retrieve()
+                    .bodyToMono(MyResponseBody.class)
+                    .toFuture()
+                    .whenComplete((myResponseBody, throwable) -> {
+                        if (throwable == null) {
+                            log.info("DATABASE WRITE REQUEST : success=[" + myResponseBody.getSuccess() + "] : message=[" + myResponseBody.getMessage()
+                                    + "] : sent dataType=[" + processedMessage.getMessageType() + "]");
+                            log.debug("Data Sent is : " + myResponseBody.getData());
+                        }
+                        else {
+                            log.error("exception occurred : dataType=[" + processedMessage.getMessageType() + "] : message=[" + myResponseBody.getMessage() + "] : " + throwable);
+//                        throw new RuntimeException(throwable);
+                        }
+                    });
+        }
+        catch (Exception exception){
+            log.error(
+                    "ERROR SENDING DATABASE WRITE REQUEST: Exception=[{}] : Message=[{}] : messageType=[{}]",
+                    exception.getClass().getSimpleName(),
+                    exception.getMessage(),
+                    processedMessage.getMessageType()
+            );
+        }
     }
 }

@@ -1,6 +1,9 @@
 package com.VersatileDataProcessor.DataProducer;
 
 import com.VersatileDataProcessor.DataProducer.fetcher.DataFetcherInterface;
+import com.VersatileDataProcessor.DataProducer.fetcher.JokeAPIFetcher;
+import com.VersatileDataProcessor.DataProducer.fetcher.MockDataFetcher;
+import com.VersatileDataProcessor.DataProducer.fetcher.RandomUserApiFetcher;
 import com.VersatileDataProcessor.DataProducer.service.ApiMessageProducerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +31,16 @@ public class DataProducerApplication {
 
 	@Component
 	public class DataFetcherScheduler {
-		@Scheduled(fixedRate = 30_000) // Run every 0.5 minute
+		@Scheduled(fixedRate = 60_000) // Run every 1 minute
 		public void fetchData() {
 			dataFetchers.forEach(DataFetcherInterface::fetchData);
+
+//			For Testing Newly Added Api-Data-Fetchers
+//			dataFetchers.forEach(dataFetcher -> {
+//                if (dataFetcher.getClass().getSimpleName().equals("RandomUserApiFetcher")) {
+//                    dataFetcher.fetchData();
+//                }
+//			});
 		}
 	}
 
